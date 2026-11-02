@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NASA NEOWISE NEO Analysis | Group 15 Mini-Project</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js via CDN for interactive data visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- ===================================================================
+       Top Navigation Bar
+       =================================================================== -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-icon">☄</div>
+        <div class="brand-text">
+          <h1>NEOWISE Orbital Analysis</h1>
+          <span>NASA CNEOS Discovery Study • Group 15</span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#module1">Ingestion & Audit</a></li>
+        <li><a href="#module2">Statistics & Features</a></li>
+        <li><a href="#module3">Planetary Defense</a></li>
+        <li><a href="#module4">Visual Analytics</a></li>
+        <li><a href="#simulator">Hazard Simulator</a></li>
+        <li><a href="#orbit-view">Orbit Visualizer</a></li>
+        <li><a href="#catalog">Catalog Explorer</a></li>
+      </ul>
+      <span class="nav-badge">Section A5</span>
+    </div>
+  </nav>
+
+  <!-- ===================================================================
+       Hero Section & Project Overview
+       =================================================================== -->
+  <header class="hero" id="overview">
+    <div class="container">
+      <div class="hero-pill">
+        <span class="dot"></span>
+        Software Lab Mini-Project • NASA CNEOS Discovery Dataset
+      </div>
+
+      <h1 class="hero-title">
+        Orbital & Hazard Analysis of <span>Near-Earth Objects</span>
+      </h1>
+
+      <p class="hero-desc">
+        A comprehensive astronomical data engineering and planetary defense study of <strong>451 Near-Earth Objects (NEOs)</strong> and comets cataloged by the <strong>NASA WISE/NEOWISE</strong> space telescope mission. Investigating orbital intersections, sentinel sanitization, physical size distributions, and ultra-close Earth approaches.
+      </p>
+
+      <!-- Team Members Strip -->
+      <div class="team-strip">
+        <div class="team-card">
+          <div class="role">Section 1: Ingestion & Pipeline</div>
+          <div class="name">Radhika Dhingra</div>
+          <div class="meta">Roll No. 27 | Sec A5 • Batch B2</div>
+        </div>
+        <div class="team-card">
+          <div class="role">Section 2: Stats & Features</div>
+          <div class="name">Kalpak Kamble</div>
+          <div class="meta">Roll No. 13 | Sec A5 • Batch B1/B2</div>
+        </div>
+        <div class="team-card">
+          <div class="role">Section 3: Hazard & Defense</div>
+          <div class="name">Chaitanya Selote</div>
+          <div class="meta">Roll No. 14 | Sec A5 • Batch B1</div>
+        </div>
+        <div class="team-card">
+          <div class="role">Section 4: Visual Analytics</div>
+          <div class="name">Ved Rai</div>
+          <div class="meta">Roll No. 33 | Sec A5 • Batch B2</div>
+        </div>
+      </div>
+
+      <!-- Telemetry Stats Banner -->
+      <div class="stats-banner">
+        <div class="stat-item">
+          <span class="stat-label">Cataloged Objects</span>
+          <span class="stat-val" id="stat-total-objects">451</span>
+          <span class="stat-sub">100% Unique Designations</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Trajectory Families</span>
+          <span class="stat-val" id="stat-orbit-classes">14</span>
+          <span class="stat-sub">Apollo, Amor, Aten & Comets</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Potentially Hazardous</span>
+          <span class="stat-val" id="stat-pha-pct">15.6%</span>
+          <span class="stat-sub">64 Confirmed PHAs</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Closest Approach (MOID)</span>
+          <span class="stat-val">0.0003 AU</span>
+          <span class="stat-sub">(2010 MU112) ~44,880 km</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===================================================================
+         Section 1: Data Ingestion & Sentinel Sanitization Pipeline
+         =================================================================== -->
+    <section class="section" id="module1">
+      <div class="section-header">
+        <span class="section-tag">Module 1 • Radhika Dhingra</span>
+        <h2 class="section-title">Data Ingestion, Schema Inspection & Sentinel Cleaning</h2>
+        <p class="section-subtitle">
+          Raw astronomical telemetry contains observational sentinels, non-standard missing tokens, and unphysical values. This pipeline purges corrupted indicators and coerces strict numerical data types.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Sentinel Audit Box -->
+        <div class="card">
+          <h3 class="card-title">
+            The 99.99 Sentinel Correction
+            <span class="badge badge-hazard">Astronomical Distortion</span>
+          </h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            In raw catalogs, comets with diffuse comae that lack clear optical disc boundaries are assigned a placeholder magnitude of <strong>99.99 mag</strong>. Without sanitization, this artifact catastrophically skews dataset averages:
+          </p>
+          <div class="audit-box">
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Mean H (mag)</span>
+              <div>
+                <span class="audit-before">27.004 mag (Raw)</span>
+                <span class="audit-arrow">→</span>
+                <span class="audit-after">20.525 mag (Cleaned)</span>
+              </div>
+            </div>
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Std Deviation</span>
+              <div>
+                <span class="audit-before">21.829 mag</span>
+                <span class="audit-arrow">→</span>
+                <span class="audit-after">1.636 mag</span>
+              </div>
+            </div>
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Maximum H</span>
+              <div>
+                <span class="audit-before">99.99 mag (Sentinel)</span>
+                <span class="audit-arrow">→</span>
+                <span class="audit-after">26.78 mag (Realistic)</span>
+              </div>
+            </div>
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Missing Indicators</span>
+              <div>
+                <span class="audit-before">??, ##, n/a, NA</span>
+                <span class="audit-arrow">→</span>
+                <span class="audit-after">Unified np.nan</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cleaning Code & Architecture -->
+        <div class="card">
+          <h3 class="card-title">Sanitization Pipeline Execution</h3>
+          <pre class="code-snippet"><code><span class="comment"># Replace non-standard tokens and astronomical sentinel</span>
+df = df.replace([<span class="string">"??"</span>, <span class="string">"##"</span>, <span class="string">"n/a"</span>, <span class="string">"N/A"</span>], np.nan)
+df[<span class="string">"H (mag)"</span>] = pd.to_numeric(df[<span class="string">"H (mag)"</span>], errors=<span class="string">"coerce"</span>)
+df[<span class="string">"H (mag)"</span>] = df[<span class="string">"H (mag)"</span>].replace(<span class="keyword">99.99</span>, np.nan)
+
+<span class="comment"># Enforce 64-bit floating point precision</span>
+numeric_cols = [<span class="string">"H (mag)"</span>, <span class="string">"MOID (au)"</span>, <span class="string">"q (au)"</span>, 
+                <span class="string">"Q (au)"</span>, <span class="string">"period (yr)"</span>, <span class="string">"i (deg)"</span>]
+<span class="keyword">for</span> col <span class="keyword">in</span> numeric_cols:
+    df[col] = pd.to_numeric(df[col], errors=<span class="string">"coerce"</span>)
+
+<span class="comment"># ISO-8601 Temporal Timestamp Parsing</span>
+df[<span class="string">"Discovery Date"</span>] = pd.to_datetime(df[<span class="string">"Discovery Date"</span>])</code></pre>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 1rem;">
+            Cleaned dataset contains exactly <strong>451 rows and 10 columns</strong> with 0 duplicate records. Hyperbolic comets with parabolic trajectories exhibit unbounded periods and aphelia.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Section 2: Descriptive Statistics & Feature Engineering
+         =================================================================== -->
+    <section class="section" id="module2">
+      <div class="section-header">
+        <span class="section-tag">Module 2 • Kalpak Kamble</span>
+        <h2 class="section-title">Descriptive Statistics & Orbital Feature Engineering</h2>
+        <p class="section-subtitle">
+          Univariate distribution parameters, dispersion metrics, and Keplerian orbital features derived from perihelion (q) and aphelion (Q) apsides.
+        </p>
+      </div>
+
+      <!-- Feature Engineering Cards -->
+      <div class="grid-2" style="margin-bottom: 1.5rem;">
+        <div class="formula-card">
+          <h4>Keplerian Orbital Eccentricity (e)</h4>
+          <p style="font-size: 0.85rem; color: var(--c-dark);">
+            Quantifies the elongation of the orbit, derived from perihelion $q$ and aphelion $Q$:
+          </p>
+          <div class="formula-display">e = (Q - q) / (Q + q)</div>
+          <p style="font-size: 0.82rem; color: var(--c-slate);">
+            <strong>Sample Range:</strong> 0.0054 (nearly circular) to 0.999994 (hyper-eccentric comets). Mean $e = 0.526$.
+          </p>
+        </div>
+
+        <div class="formula-card">
+          <h4>Orbital Span (Radial Extent Δr)</h4>
+          <p style="font-size: 0.85rem; color: var(--c-dark);">
+            Linear radial distance swept by the object between closest and farthest solar distances:
+          </p>
+          <div class="formula-display">Δr = Q - q = 2ae</div>
+          <p style="font-size: 0.82rem; color: var(--c-slate);">
+            <strong>Sample Range:</strong> 0.03 AU (tight Aten orbits) to 338,830.42 AU (Oort cloud comets).
+          </p>
+        </div>
+      </div>
+
+      <!-- Comprehensive Univariate Stats Table -->
+      <div class="card">
+        <h3 class="card-title">Comprehensive Univariate Statistical Profile</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Computed across all six cleaned numerical features. Notice the extreme divergence between Mean and Median for Aphelion $Q$ and Period caused by long-period comets.
+        </p>
+        <div class="stat-table-wrapper">
+          <table class="data-table" id="univariate-table">
+            <thead>
+              <tr>
+                <th>Astronomical Parameter</th>
+                <th>Mean</th>
+                <th>Median (50%)</th>
+                <th>Std Dev</th>
+                <th>Variance</th>
+                <th>Skewness</th>
+                <th>IQR (25% - 75%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Section 3: Planetary Defense & Orbit Profiling
+         =================================================================== -->
+    <section class="section" id="module3">
+      <div class="section-header">
+        <span class="section-tag">Module 3 • Chaitanya Selote</span>
+        <h2 class="section-title">Orbit Class Profiling, Planetary Defense & Correlation</h2>
+        <p class="section-subtitle">
+          Identifying extreme objects, screening potentially hazardous asteroids, testing orbital hypotheses, and examining the top 10 closest Earth-approaching bodies.
+        </p>
+      </div>
+
+      <!-- Insight Callout -->
+      <div class="insight-callout">
+        <h4>Dual-Criterion Scientific Definition of a Potentially Hazardous Asteroid (PHA)</h4>
+        <p>
+          NASA defines an asteroid as potentially hazardous <strong>only if both criteria are satisfied</strong>:
+          <br>
+          1. <strong>Minimum Orbit Intersection Distance:</strong> $\text{MOID} \le 0.05\text{ AU}$ (~19.5 Lunar Distances / 7.48 million km).
+          <br>
+          2. <strong>Absolute Magnitude:</strong> $H \le 22.0\text{ mag}$ (corresponding to an estimated physical diameter $\ge 140\text{ meters}$).
+          <br>
+          Objects like <em>(2010 LV108)</em> have an ultra-close MOID of $0.002\text{ AU}$, yet are flagged as <strong>Non-Hazardous (N)</strong> because $H = 22.36\text{ mag}$ (too small to cause regional devastation upon atmospheric entry).
+        </p>
+      </div>
+
+      <!-- Top 10 Closest Approaches Table -->
+      <div class="card">
+        <h3 class="card-title">
+          Top 10 Closest Earth Approaches in NEOWISE Catalog
+          <span class="badge badge-class">Aten & Apollo Dominated</span>
+        </h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+          Ranked by Minimum Orbit Intersection Distance (MOID). All 10 closest approaches belong exclusively to Earth-crossing Apollo and Aten orbital classes.
+        </p>
+        <div class="stat-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Designation</th>
+                <th>Discovery Date</th>
+                <th>MOID (au)</th>
+                <th>H (mag)</th>
+                <th>q (au)</th>
+                <th>Q (au)</th>
+                <th>Eccentricity</th>
+                <th>PHA Status</th>
+                <th>Orbit Class</th>
+              </tr>
+            </thead>
+            <tbody id="top10-table-body">
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Pearson Correlation & Hypothesis Testing -->
+      <div class="grid-2">
+        <div class="card">
+          <h3 class="card-title">Pearson Hypothesis Test (q vs Q)</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Testing linear correlation between perihelion distance $q$ and aphelion distance $Q$:
+          </p>
+          <div class="audit-box">
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Pearson Correlation (r)</span>
+              <span class="audit-after">0.0268 (Near Zero)</span>
+            </div>
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Two-Tailed P-Value</span>
+              <span class="audit-before">0.5713 (p > 0.05)</span>
+            </div>
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Statistical Decision</span>
+              <span class="audit-after">Fail to Reject H₀</span>
+            </div>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 1rem;">
+            <strong>Astronomical Conclusion:</strong> Perihelion distance and aphelion distance are statistically independent across the NEOWISE sample.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">Missing Value Imputation Strategy</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Demonstrating non-destructive statistical imputation on dataset copies:
+          </p>
+          <div class="audit-box">
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">MOID (au) Imputation</span>
+              <span class="audit-after">Mean Imputation = 0.3399 AU</span>
+            </div>
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">H (mag) Imputation</span>
+              <span class="audit-after">Mode Imputation = 19.14 mag</span>
+            </div>
+            <div class="audit-metric-row">
+              <span class="audit-metric-name">Remaining Nulls</span>
+              <span class="audit-after">0 Nulls in Imputed Copy</span>
+            </div>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 1rem;">
+            Preserves physical distribution boundaries while satisfying downstream machine-learning algorithms that require zero missing values.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Section 4: Visual Analytics & Mission Trends
+         =================================================================== -->
+    <section class="section" id="module4">
+      <div class="section-header">
+        <span class="section-tag">Module 4 • Ved Rai</span>
+        <h2 class="section-title">Visual Analytics, Distributions & Discovery Timeline</h2>
+        <p class="section-subtitle">
+          Interactive visualizations reflecting the WISE/NEOWISE mission phases, magnitude frequency, and planetary hazard distributions.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Chart 1: PHA Distribution -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Potentially Hazardous Asteroid Proportion</div>
+            <div class="chart-actions">
+              <button class="btn-sm" onclick="openPlotModal('assets/charts/pha_distribution.png', 'Notebook Cell 19: PHA Status Pie Chart')">View Notebook Plot</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartPHA"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Absolute Magnitude Histogram -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Absolute Magnitude H (mag) Distribution</div>
+            <div class="chart-actions">
+              <button class="btn-sm" onclick="openPlotModal('assets/charts/magnitude_hist.png', 'Notebook Cell 20: Absolute Magnitude Histogram')">View Notebook Plot</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartMagnitude"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Temporal Discovery Timeline -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">NEOWISE Discoveries by Year (Mission Phases)</div>
+            <div class="chart-actions">
+              <button class="btn-sm" onclick="openPlotModal('assets/charts/discoveries_by_year.png', 'Notebook Cell 21: Yearly Discovery Timeline')">View Notebook Plot</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartYearly"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Orbit Classes Among PHAs -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Trajectory Classes Among Hazardous NEOs</div>
+            <div class="chart-actions">
+              <button class="btn-sm" onclick="openPlotModal('assets/charts/pha_orbit_pie.png', 'Notebook Cell 25: PHA Orbit Class Pie Chart')">View Notebook Plot</button>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="chartPHAOrbits"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Authentic Notebook Plots Gallery -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <h3 class="card-title">Authentic Notebook Analytical Visualizations</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          Click any analytical figure below to inspect the original high-resolution Matplotlib & Seaborn plots generated during notebook execution:
+        </p>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button class="btn-sm" onclick="openPlotModal('assets/charts/correlation_heatmap.png', 'Notebook Cell 28: Correlation Heatmap')">📊 Correlation Heatmap</button>
+          <button class="btn-sm" onclick="openPlotModal('assets/charts/boxplots_numerical.png', 'Notebook Cell 27: Feature Boxplots')">📦 Numerical Feature Boxplots</button>
+          <button class="btn-sm" onclick="openPlotModal('assets/charts/moid_vs_magnitude.png', 'Notebook Cell 24: MOID vs Absolute Magnitude Scatter')">🎯 MOID vs H (mag) Scatter</button>
+          <button class="btn-sm" onclick="openPlotModal('assets/charts/discoveries_by_orbit.png', 'Notebook Cell 22: Discoveries by Orbit Class')">📈 Yearly Discoveries by Class</button>
+          <button class="btn-sm" onclick="openPlotModal('assets/charts/moid_by_year.png', 'Notebook Cell 23: Mean MOID by Year')">📉 Mean MOID Timeline</button>
+          <button class="btn-sm" onclick="openPlotModal('assets/charts/pairplot.png', 'Notebook Cell 29: Seaborn Multi-Feature Pairplot')">🔍 Full Parameter Pairplot</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Planetary Defense Dual-Filter Screening Simulator
+         =================================================================== -->
+    <section class="section" id="simulator">
+      <div class="section-header">
+        <span class="section-tag">Interactive Simulation</span>
+        <h2 class="section-title">Planetary Defense Dual-Filter Screening Tool</h2>
+        <p class="section-subtitle">
+          Adjust the intersection proximity (MOID) and physical brightness threshold (H mag) to dynamically filter the catalog and observe planetary hazard screening in real time.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="sim-controls">
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Maximum MOID Threshold</span>
+              <span class="slider-val" id="val-moid">0.050 AU</span>
+            </div>
+            <input type="range" id="slider-moid" min="0.001" max="0.5" step="0.005" value="0.05">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">NASA PHA standard: MOID ≤ 0.050 AU (~19.5 Lunar Distances)</span>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <span>Maximum Absolute Magnitude H</span>
+              <span class="slider-val" id="val-h">22.0 mag</span>
+            </div>
+            <input type="range" id="slider-h" min="15.0" max="27.0" step="0.5" value="22.0">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">NASA PHA standard: H ≤ 22.0 mag (Diameter ≥ ~140 meters)</span>
+          </div>
+        </div>
+
+        <div class="sim-output-banner">
+          <div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--c-dark);">Candidate Asteroids Meeting Filter:</div>
+            <div class="sim-count" id="sim-count-total">66 Objects</div>
+          </div>
+          <div>
+            <span class="badge badge-hazard" id="sim-badge-pha" style="font-size: 0.9rem; padding: 0.4rem 1rem;">
+              64 Confirmed PHAs Included
+            </span>
+          </div>
+        </div>
+
+        <div class="stat-table-wrapper" style="max-height: 320px; overflow-y: auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Designation</th>
+                <th>MOID (au)</th>
+                <th>H (mag)</th>
+                <th>PHA Flag</th>
+                <th>Orbit Class</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sim-table-body">
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         2D Keplerian Orbit Visualizer (HTML5 Canvas)
+         =================================================================== -->
+    <section class="section" id="orbit-view">
+      <div class="section-header">
+        <span class="section-tag">Interactive Orbital Mechanics</span>
+        <h2 class="section-title">2D Keplerian Solar System Orbit Visualizer</h2>
+        <p class="section-subtitle">
+          Interactive orbital simulation rendered on HTML5 Canvas. Shows the central Sun, Earth's 1.0 AU reference orbit, and the chosen asteroid's elliptical trajectory.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="orbit-visualizer-container">
+          <!-- Canvas Wrapper -->
+          <div class="canvas-wrapper">
+            <canvas id="orbitCanvas" width="600" height="480"></canvas>
+          </div>
+
+          <!-- Orbital Telemetry HUD -->
+          <div class="orbit-hud">
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--c-dark); margin-bottom: 0.25rem;" id="hud-name">
+              (2010 MU112)
+            </h3>
+            <span class="badge badge-hazard" id="hud-badge" style="width: fit-content;">PHA = Y (Apollo)</span>
+
+            <div class="hud-item">
+              <span class="hud-label">Perihelion (q)</span>
+              <span class="hud-value" id="hud-q">0.81 AU</span>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">Aphelion (Q)</span>
+              <span class="hud-value" id="hud-Q">2.70 AU</span>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">Semi-Major Axis (a)</span>
+              <span class="hud-value" id="hud-a">1.75 AU</span>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">Eccentricity (e)</span>
+              <span class="hud-value" id="hud-e">0.538</span>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">Inclination (i)</span>
+              <span class="hud-value" id="hud-i">48.04°</span>
+            </div>
+            <div class="hud-item">
+              <span class="hud-label">Earth MOID</span>
+              <span class="hud-value" id="hud-moid">0.0003 AU</span>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+              <button class="btn-sm" id="btn-toggle-anim" style="flex: 1;">Pause Animation</button>
+              <button class="btn-sm" id="btn-reset-zoom">Reset Zoom</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Interactive 451-NEO Catalog Explorer
+         =================================================================== -->
+    <section class="section" id="catalog">
+      <div class="section-header">
+        <span class="section-tag">Complete Dataset</span>
+        <h2 class="section-title">NASA NEOWISE Catalog Explorer</h2>
+        <p class="section-subtitle">
+          Search, filter, and inspect all 451 cataloged Near-Earth Objects and comets. Click "Plot Orbit" on any row to visualize its orbit above.
+        </p>
+      </div>
+
+      <div class="card">
+        <!-- Toolbar -->
+        <div class="catalog-toolbar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="catalog-search" placeholder="Search designation (e.g. 2010 MU112, 2024, Halley)...">
+          </div>
+
+          <select class="select-filter" id="filter-orbit-class">
+            <option value="ALL">All Orbit Classes (14)</option>
+            <!-- Injected by JavaScript -->
+          </select>
+
+          <select class="select-filter" id="filter-pha">
+            <option value="ALL">All PHA Statuses</option>
+            <option value="Y">Potentially Hazardous (Y)</option>
+            <option value="N">Non-Hazardous (N)</option>
+            <option value="UNKNOWN">Unclassified / Comets</option>
+          </select>
+        </div>
+
+        <!-- Data Table -->
+        <div class="stat-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Designation</th>
+                <th>Discovery Date</th>
+                <th>H (mag)</th>
+                <th>MOID (au)</th>
+                <th>q (au)</th>
+                <th>Q (au)</th>
+                <th>Period (yr)</th>
+                <th>i (deg)</th>
+                <th>PHA</th>
+                <th>Orbit Class</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="catalog-table-body">
+              <!-- Injected by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Bar -->
+        <div class="pagination-bar">
+          <span id="pagination-info">Showing 1 to 20 of 451 objects</span>
+          <div class="pagination-controls">
+            <button class="btn-page" id="btn-prev-page">← Previous</button>
+            <button class="btn-page" id="btn-next-page">Next →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         Conclusion & Key Findings
+         =================================================================== -->
+    <section class="section" id="conclusion">
+      <div class="section-header">
+        <span class="section-tag">Project Synthesis</span>
+        <h2 class="section-title">Key Conclusions & Planetary Defense Insights</h2>
+        <p class="section-subtitle">
+          Summary of primary astronomical findings and data engineering takeaways from Group 15's investigation.
+        </p>
+      </div>
+
+      <div class="takeaway-grid">
+        <div class="takeaway-card">
+          <div class="takeaway-num">01</div>
+          <h3>Criticality of Sentinel Purging</h3>
+          <p>
+            Astronomical placeholders like comet magnitude $H = 99.99$ mag and string tokens distort summary statistics by orders of magnitude. Replacing sentinels restored the mean magnitude from an artificial $27.004$ mag to a physically true $20.525$ mag.
+          </p>
+        </div>
+
+        <div class="takeaway-card">
+          <div class="takeaway-num">02</div>
+          <h3>Earth-Crossing Orbit Dominance</h3>
+          <p>
+            Over 82% of NEOWISE discoveries belong to the Apollo (47.5%), Amor (27.3%), and Aten (7.3%) classes. Aten and Apollo asteroids exhibit the lowest mean MOIDs ($0.069$ AU and $0.125$ AU) and account for all 10 of the closest Earth-approaching objects.
+          </p>
+        </div>
+
+        <div class="takeaway-card">
+          <div class="takeaway-num">03</div>
+          <h3>Dual-Criterion Threat Screening</h3>
+          <p>
+            While 15.6% of evaluated asteroids are Potentially Hazardous (led by Apollo asteroid <em>(2010 MU112)</em> at MOID = $0.0003$ AU), several ultra-close objects ($MOID \le 0.005$ AU) are non-hazardous due to small physical sizes ($H > 22.0$ mag).
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================
+       Footer
+       =================================================================== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h4>Software Lab Mini-Project • Group 15</h4>
+          <p>
+            Orbital & Hazard Analysis of Near-Earth Objects Using NASA NEOWISE Dataset. Sourced from NASA Jet Propulsion Laboratory / Center for Near-Earth Object Studies (CNEOS).
+          </p>
+        </div>
+        <div class="footer-team-members">
+          <div><strong>Radhika Dhingra</strong> — Roll 27 | Sec A5 (Batch B2)</div>
+          <div><strong>Kalpak Kamble</strong> — Roll 13 | Sec A5 (Batch B1/B2)</div>
+          <div><strong>Chaitanya Selote</strong> — Roll 14 | Sec A5 (Batch B1)</div>
+          <div><strong>Ved Rai</strong> — Roll 33 | Sec A5 (Batch B2)</div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>Dataset: NASA CNEOS (451 Near-Earth Objects)</span>
+        <span>Built with Pure HTML5, CSS3 & JavaScript (Minimalist Palette)</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================
+       Modal for Viewing Original Notebook Plots
+       =================================================================== -->
+  <div class="modal-overlay" id="plotModal" onclick="closePlotModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closePlotModal(null)">&times;</button>
+      <h3 id="modalTitle" style="font-size: 1.15rem; color: var(--c-dark);">Notebook Plot</h3>
+      <img id="modalImg" class="modal-img" src="" alt="Notebook Analytical Plot">
+    </div>
+  </div>
+
+  <!-- Scripts: Dataset first, then Application Logic -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
