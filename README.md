@@ -59,7 +59,7 @@ This project delivers a multi-stage astronomical data science study of **451 spa
 | Section / Module | Assigned Investigator | Roll Number | Batch | Core Responsibilities |
 | :--- | :--- | :---: | :---: | :--- |
 | **Module 1** | **Radhika Dhingra** | **27** | B2 | Data ingestion, schema inspection, sentinel value filtering (`99.99` mag comae correction), missing token normalization, type coercion. |
-| **Module 2** | **Kalpak Kamble** | **13** | B1/B2 | Univariate statistics, dispersion analysis (IQR, variance, skewness), Keplerian orbital feature engineering ($e$ and $\Delta r$). |
+| **Module 2** | **Kalpak Kamble** | **13** | B1 | Univariate statistics, dispersion analysis (IQR, variance, skewness), Keplerian orbital feature engineering ($e$ and $\Delta r$). |
 | **Module 3** | **Chaitanya Selote** | **14** | B1 | Orbit class profiling, dual-criterion PHA planetary defense screening, top 10 close approaches, Pearson hypothesis testing, statistical imputation. |
 | **Module 4** | **Ved Rai** | **33** | B2 | Visual analytics, Matplotlib/Seaborn multi-panel figures, magnitude distributions, PHA cross-tabulations, temporal discovery timelines. |
 
